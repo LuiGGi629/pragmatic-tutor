@@ -17,7 +17,42 @@ jupyter:
 # %autosave 0
 ```
 
+```{python}
+import os
+from IPython.display import Image
+```
+
+```{python}
+os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/pics/')
+print(os.getcwd())
+```
+
 [Configure PyCharm for Django project](https://medium.com/@srijan.pydev_21998/configure-pycharm-for-python-django-and-introduction-to-django-rest-framework-f9c1a7cb4ba0)
+
+
+- **views.py**
+
+This is the e.g., logic how we want to handle when user goes to a specific route:
+
+```{python}
+Image(filename='django-views.png')
+```
+
+- **blog/urls.py**
+
+Map urls that we want to corespond to each view function:
+
+```{python}
+Image(filename='django-blog-urls.png')
+```
+
+- **django_project/urls.py**
+
+We have urls module in main project also. That urls module will tell our whole website which urls should send us to our blog app.
+
+```{python}
+Image(filename='django-project-urls.png')
+```
 
 ```{python}
 
