@@ -23,11 +23,14 @@ from IPython.display import Image
 ```
 
 ```{python}
-os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/pics/')
+os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/pics/django/')
 print(os.getcwd())
 ```
 
 [Configure PyCharm for Django project](https://medium.com/@srijan.pydev_21998/configure-pycharm-for-python-django-and-introduction-to-django-rest-framework-f9c1a7cb4ba0)
+
+
+# Applications and Routes
 
 
 - **views.py**
@@ -52,6 +55,361 @@ We have urls module in main project also. That urls module will tell our whole w
 
 ```{python}
 Image(filename='django-project-urls.png')
+```
+
+- **settings.py**
+
+Get used to adding apps to this list, anytime you create a new app. For django to correctly work with templates, databases.
+
+```{python}
+Image(filename='django-settings.png')
+```
+
+- **for loop in django templating engine**
+- remember about endfor when looping
+- double {{ }} to access a variable
+- . (dot) syntax on a dict. That's how we get e.g., title
+
+
+
+# Templates
+
+```{python}
+Image(filename='for-loop-in-a-templating-engine.png')
+```
+
+- **If block in django templating engine**
+- then we can directly pass dict directly in as this argument.
+
+```{python}
+Image(filename='if-block-in-a-templating-engine.png')
+```
+
+```{python}
+Image(filename='django-views.png')
+```
+
+- **template inheritance**
+
+Within base.html pick out all the repeated sections between templates.
+
+```{python}
+Image(filename='template-inheritance.png')
+```
+
+- **load static files**
+
+```{python}
+Image(filename='load-static.png')
+```
+
+```{python}
+Image(filename='static-files-url.png')
+```
+
+- **django url tag**
+
+```{python}
+Image(filename='django-url-tag.png')
+```
+
+- **models.py**
+
+What we want to save to db?
+
+- manage.py@django_project > makemigrations
+
+Migrations are useful, because they allow us to make changes to db, even after it's created and has data in that db.
+
+```{python}
+Image(filename='models-post.png')
+```
+
+# Database and Migrations
+
+
+**manage.py@django_project > sqlmigrate blog 0001**
+
+Let's see SQL code
+
+```{python}
+Image(filename='sqlmigrate.png')
+```
+
+manage.py@django_project > migrate
+
+
+**How to query db using these models?**
+
+```{python}
+Image(filename='query-db.png')
+```
+
+```{python}
+Image(filename='query-db-continued.png')
+```
+
+- **Run query on a Post model, and pass in all of that data instead**
+
+```{python}
+Image(filename='query-post-model.png')
+```
+
+```{python}
+Image(filename='format-date-template.png')
+```
+
+- **admin.py**
+
+This is where we can register our models, so that they can show up on our admin page
+
+```{python}
+Image(filename='admin-register-models.png')
+```
+
+# User Registration
+
+
+- **users/views.py**
+
+```{python}
+Image(filename='users-register.png')
+```
+
+Redirect user back to homepage
+
+
+- **register.html**
+
+```{python}
+Image(filename='register-html.png')
+```
+
+- **django_project/urls.py**
+
+Remember about adding:
+
+```{python}
+Image(filename='urls-register.png')
+```
+
+- **base.html**
+
+flash messages
+
+```{python}
+Image(filename='flash-messages.png')
+```
+
+- **users/forms.py**
+
+```{python}
+Image(filename='user-register-form.png')
+```
+
+# Login and Logout System
+
+
+- **django_project/urls.py**
+
+Import views
+
+```{python}
+Image(filename='in-out-url.png')
+```
+
+- **login.html**
+
+```{python}
+Image(filename='login-template.png')
+```
+
+- **logout.html**
+
+```{python}
+Image(filename='logout-template.png')
+```
+
+- **settings.py**
+
+```{python}
+Image(filename='login-settings.png')
+```
+
+- **views.py**
+
+```{python}
+Image(filename='lrp-views.png')
+```
+
+- **base.html**
+
+```{python}
+Image(filename='conditional-navbar.png')
+```
+
+- **users/models.py**
+
+manage.py@django_project > makemigrations
+
+manage.py@django_project > migrate
+
+register this model within admin file of our app
+
+```{python}
+
+```
+
+```{python}
+Image(filename='access-image-from-shell.png')
+```
+
+Store uploaded files (settings.py):
+
+```{python}
+Image(filename='uploaded-files-settings.png')
+```
+
+profile.html
+
+```{python}
+Image(filename='profile-template.png')
+```
+
+[Managing static files (e.g. images, JavaScript, CSS)](https://docs.djangoproject.com/en/3.0/howto/static-files/)
+
+
+urls.py
+
+```{python}
+Image(filename='urls-settings.png')
+```
+
+signals.py
+
+```{python}
+Image(filename='signals.png')
+```
+
+apps.py
+
+```{python}
+Image(filename='user-config.png')
+```
+
+# Update User Profile
+
+
+users/forms.py
+
+```{python}
+Image(filename='up-user-and-profile-form.png')
+```
+
+users/views.py
+
+```{python}
+Image(filename='views-profile.png')
+```
+
+profile.html
+
+```{python}
+Image(filename='profile-template.png')
+```
+
+users/models.py
+
+```{python}
+Image(filename='up-save-method.png')
+```
+
+# Create, Update, and Delete Posts
+
+
+blog/views.py
+
+Class based views
+
+home list view
+
+```{python}
+Image(filename='create-list-views.png')
+```
+
+```{python}
+Image(filename='update-delete-views.png')
+```
+
+blog/urls.py
+
+```{python}
+Image(filename='crud-urls.png')
+```
+
+blog/templates/blog/post_detail.html
+
+```{python}
+Image(filename='post-detail-template.png')
+```
+
+blog/templates/blog/home.html
+
+```{python}
+Image(filename='crud-home-template.png')
+```
+
+blog/templates/blog/post_form.html
+
+
+blog/models.py
+
+```{python}
+Image(filename='get-abs-url.png')
+```
+
+blog/templates/blog/post_confirm_delete.html
+
+
+blog/templates/blog/base.html
+
+
+# Pagination
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
 ```
 
 ```{python}
