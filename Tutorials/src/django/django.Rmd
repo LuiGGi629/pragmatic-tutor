@@ -273,7 +273,7 @@ Image(filename='uploaded-files-settings.png')
 profile.html
 
 ```{python}
-
+Image(filename='profile-template.png')
 ```
 
 [Managing static files (e.g. images, JavaScript, CSS)](https://docs.djangoproject.com/en/3.0/howto/static-files/)
@@ -282,16 +282,123 @@ profile.html
 urls.py
 
 ```{python}
-
+Image(filename='urls-settings.png')
 ```
 
 signals.py
 
 ```{python}
-
+Image(filename='signals.png')
 ```
 
 apps.py
+
+```{python}
+Image(filename='user-config.png')
+```
+
+# Update User Profile
+
+
+users/forms.py
+
+```{python}
+Image(filename='up-user-and-profile-form.png')
+```
+
+users/views.py
+
+```{python}
+Image(filename='views-profile.png')
+```
+
+profile.html
+
+```{python}
+Image(filename='profile-template.png')
+```
+
+users/models.py
+
+```{python}
+Image(filename='up-save-method.png')
+```
+
+# Create, Update, and Delete Posts
+
+
+blog/views.py
+
+Class based views
+
+home list view
+
+```{python}
+Image(filename='create-list-views.png')
+```
+
+```{python}
+Image(filename='update-delete-views.png')
+```
+
+blog/urls.py
+
+```{python}
+Image(filename='crud-urls.png')
+```
+
+blog/templates/blog/post_detail.html
+
+```{python}
+Image(filename='post-detail-template.png')
+```
+
+blog/templates/blog/home.html
+
+```{python}
+Image(filename='crud-home-template.png')
+```
+
+blog/templates/blog/post_form.html
+
+
+blog/models.py
+
+```{python}
+Image(filename='get-abs-url.png')
+```
+
+blog/templates/blog/post_confirm_delete.html
+
+
+blog/templates/blog/base.html
+
+
+# Pagination
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
 
 ```{python}
 
