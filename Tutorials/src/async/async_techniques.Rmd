@@ -1,0 +1,267 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.3
+  kernelspec:
+    display_name: venv
+    language: python
+    name: venv
+---
+
+```{python}
+# %autosave 0
+```
+
+```{python}
+import os
+from IPython.display import Image
+```
+
+```{python}
+os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/pics/async/')
+print(os.getcwd())
+```
+
+# Python's parallel APIs spectrum
+
+```{python}
+Image(filename='async-techniques.png')
+```
+
+```{python}
+Image(filename='what-is-async.png')
+```
+
+### 3 different approaches that Python can take to this;
+- threads
+- processes
+- asyncIO
+
+## Knowing when to choose one over another is super important
+
+```{python}
+Image(filename='synchronous-execution.png')
+```
+
+```{python}
+Image(filename='async-execution.png')
+```
+
+# Simple Generator
+    - Generators are "restartable" functions --> they can run to a point and then stop, and then resume.
+
+```{python}
+Image(filename='simple-generator.png')
+```
+
+### Color in threading and concurrency is super helpful to understand what part is happening where and in what order it's all hapening.
+
+```{python}
+Image(filename='colorama.png')
+```
+
+## This is the execution side of things:
+
+```{python}
+Image(filename='execution.png')
+```
+
+## The two steps;
+    - Begin by making method async
+    - Await all async methods you call
+
+```{python}
+Image(filename='async-await-keywords.png')
+```
+
+## aiohttp
+
+```{python}
+Image(filename='aiohttp-syntax.png')
+```
+
+## Here the goal is to start all of the tasks, and then we are going to either just get their value right back or wait.
+## Now block or wait for that response to come in, and get the next task. Maybe it's already done?
+## Instead of trying to do one at the time, we are going to start them all, and then processes them all.
+
+```{python}
+Image(filename='web-scraping.png')
+```
+
+```{python}
+Image(filename='web-requests.png')
+```
+
+## Other async-enabled libraries
+- [File I/O](https://github.com/Tinche/aiofiles)
+- [MongoDB ODM](https://github.com/Scille/umongo)
+- [PostgreSQL Database Client Library for Python/asyncio](https://github.com/MagicStack/asyncpg)
+- [Redis](https://github.com/aio-libs/aioredis)
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
