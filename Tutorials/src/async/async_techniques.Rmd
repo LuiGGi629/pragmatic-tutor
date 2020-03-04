@@ -36,6 +36,10 @@ Image(filename='async-techniques.png')
 Image(filename='what-is-async.png')
 ```
 
+```{python}
+Image(filename='python-async.png')
+```
+
 ### 3 different approaches that Python can take to this;
 - threads
 - processes
@@ -101,6 +105,142 @@ Image(filename='web-requests.png')
 - [MongoDB ODM](https://github.com/Scille/umongo)
 - [PostgreSQL Database Client Library for Python/asyncio](https://github.com/MagicStack/asyncpg)
 - [Redis](https://github.com/aio-libs/aioredis)
+
+```{python}
+
+```
+
+# Threads
+
+
+## Create a list of threads --> use list comp to start them --> list comp to wait on them
+
+```{python}
+Image(filename='wait-for-more-threads.png')
+```
+
+```{python}
+Image(filename='threading-exception.png')
+```
+
+```{python}
+Image(filename='pop-from-empty-list.png')
+```
+
+```{python}
+Image(filename='thread-api.png')
+```
+
+```{python}
+Image(filename='cancel-fork-join-work.png')
+```
+
+```{python}
+Image(filename='processor_count.png')
+```
+
+# Threading requires extra safety
+    - Normally our code runs from top to bottom.
+    - However along the way it enters these temporarily invalid states.
+    - The problem with threading is you have two of these things running at the same time potentially.
+    - If they share a data structure --> one of the functions looks at it while another function has put it into this temporary invalid state.
+# BOOM!
+    - You have a threading bug!
+
+```{python}
+Image(filename='thread-safety.png')
+```
+
+```{python}
+Image(filename='if-exception-release-lock.png')
+```
+
+# Is exactly the same as:
+
+```{python}
+Image(filename='with-transfer-lock.png')
+```
+
+# Ask for memory address. Python id of a pointer.
+
+```{python}
+Image(filename='accounts-order.png')
+```
+
+# If you are taking two locks from two different things you have to make sure that you are always taking them in a same order or there is a good chance that you are going to DEADLOCK you application 
+
+```{python}
+Image(filename='basic-thread-safety.png')
+```
+
+#  Leveraging CPU cores with multiprocessing
+
+```{python}
+Image(filename='scaling-CPU-bound-operations.png')
+```
+
+```{python}
+Image(filename='running-parallel-code-in-processes.png')
+```
+
+```{python}
+Image(filename='exchanging-data.png')
+```
+
+```{python}
+Image(filename='compare-multi-threading-processing.png')
+```
+
+```{python}
+Image(filename='executor.png')
+```
+
+# Built on asyncio: why do we need additional libraries?
+- Executing an async function outside of an existing event loop is troublesome
+- asyncio.Future is not thread safe
+- concurrent.Future's cannot be directly awaited
+- Future.result() is a blocking operation even within an event loop
+- asyncio.Future.result() will throw an exception if the future is not done
+- async Functions always execute in the asyncio loop (not thread or process backed)
+- Cancellation and timeouts are tricky in threads and processes
+- Thread local storage doesn't work for asyncio concurrency
+- Testing concurrent code can be very tricky
+
+```{python}
+Image(filename='mix-mode-parallelism.png')
+```
+
+```{python}
+Image(filename='unsync-mix-mode-parallelism.png')
+```
+
+# Parallelism in C with Cython
+
+```{python}
+Image(filename='cython.png')
+```
+
+```{python}
+Image(filename='why-cython.png')
+```
+
+```{python}
+Image(filename='cython-syntax.png')
+```
+
+```{python}
+Image(filename='hello-cython.png')
+```
+
+# How do I know where my program is slow?
+
+```{python}
+Image(filename='profile-call-graph.png')
+```
+
+```{python}
+Image(filename='nogil-concept.png')
+```
 
 ```{python}
 
