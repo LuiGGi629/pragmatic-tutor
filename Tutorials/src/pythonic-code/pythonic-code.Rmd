@@ -1,0 +1,1683 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.3
+  kernelspec:
+    display_name: venv
+    language: python
+    name: venv
+---
+
+```{python}
+# %autosave 0
+```
+
+```{python}
+import os
+from IPython.display import Image
+
+os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/pics/pythonic/')
+print(os.getcwd())
+```
+
+# Truthiness of an element:
+
+```{python}
+def print_truthiness(msg, exp):
+    print(("TRUE" if exp else "FALSE") + " <-- " + msg)
+
+
+print_truthiness("Testing True", True)
+print_truthiness("Testing False", False)
+# for sequences
+
+seq = []
+print_truthiness("Empty list", seq)
+seq.append("The cat")
+print_truthiness("1 item list", seq)
+
+# for objects and numbers
+print_truthiness("Zero", 0)
+print_truthiness("Eleven", 11)
+print_truthiness("-Eleven", -11)
+
+# for None
+print_truthiness("For none", None)
+
+
+# custom types
+class AClass:
+    def __init__(self):
+        self.data = []
+
+    def add(self, item):
+        self.data.append(item)
+
+    def __bool__(self):
+        return True if self.data else False
+
+a = AClass()
+
+print_truthiness("Empty AClass", a)
+a.add("Thing")
+print_truthiness("nonempty AClass", a)
+```
+
+# Noneness
+
+```{python}
+def db_search(search_text):
+    return [1, 11]
+
+
+db_is_available = True
+
+
+def find_accounts(search_text):
+    # perform search...
+    if not db_is_available:
+        return None
+
+    # returns a list of account IDs
+    return db_search(search_text)
+
+
+accounts = find_accounts('python')
+if accounts is None:
+    print("Error: DB not available")
+else:
+    print("Accounts found: Would list them here...")
+```
+
+# Multiple Compares
+
+```{python}
+from enum import Enum
+
+
+def main():
+    d_text = input("Which direction [n,s,w,e,nw,ne,sw,se]? ")
+    m = Moves.parse(d_text)
+
+    if m is None:
+        print("That's not a move!")
+        return
+
+    print(m)
+
+    if m in {Moves.West, Moves.North, Moves.East, Moves.South}:
+        print("That's a direct move.")
+    else:
+        print("That's a diagonal move.")
+
+
+class Moves(Enum):
+    West = 1
+    North = 2
+    East = 3
+    South = 4
+    NorthEast = 5
+    SouthEast = 6
+    NorthWest = 7
+    SouthWest = 8
+
+    @staticmethod
+    def parse(text: str):
+        if not text:
+            return None
+
+        text = text.strip().lower()
+        if text == 'w':
+            return Moves.West
+        if text == 'n':
+            return Moves.North
+        if text == 'e':
+            return Moves.East
+        if text == 's':
+            return Moves.South
+
+        if text == 'ne':
+            return Moves.NorthEast
+        if text == 'se':
+            return Moves.SouthEast
+        if text == 'nw':
+            return Moves.NorthWest
+        if text == 'sw':
+            return Moves.SouthWest
+
+        return None
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Randomness
+
+```{python}
+import random
+
+letters = "abcdefghijklmnopqrstuvwxyz1234567890"
+item = random.choice(letters)
+print(item)
+```
+
+# Stringification
+
+```{python}
+# Create the string "Hi, I'm Pele and I'm 83 years old."
+name = 'Pele'
+age = 83
+print(f"Hi, I'm {name} and I'm {age} years old.")
+
+```
+
+# State your state
+
+```{python}
+import sys
+import time
+
+
+def main():
+    confirm = input("Are you sure you want to format drive C: [yes, NO]? ")
+    if not confirm or confirm.lower() != 'yes':
+        print("Format cancelled!")
+        sys.exit(1)
+
+    for _ in range(40):
+        time.sleep(.15)
+        print('.', end='')
+        sys.stdout.flush()
+    print()
+    print("Format completed successful. Enjoy the new hard drive space.")
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Flat is better than nested
+
+```{python}
+import _07_flat_support_file as s
+
+
+def main():
+    download_flat()
+
+
+def download_flat():
+    print("Let's try to download a file")
+    if not s.check_download_url():
+        print("Bad URL!")
+        return
+
+    if not s.check_network():
+        print("No network")
+        return
+
+    if not s.check_dns():
+        print("No DNS")
+        return
+
+    if not s.check_access_allowed():
+        print("No access")
+        return
+
+    print("Sweet, we can download ...")
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Dictionaries
+# Performance
+
+```{python}
+import collections
+import datetime
+import random
+import sys
+
+DataPoint = collections.namedtuple("DataPoint", "id x y temp quality")
+
+
+def main():
+    print("Creating data...", end=' ')
+    sys.stdout.flush()
+
+    data_list = []
+    random.seed(669)
+    for d_id in range(500_000):
+        x = random.randint(0, 1000)
+        y = random.randint(0, 1000)
+        temp = random.randint(-10, 50)
+        quality = random.random()
+        data_list.append(DataPoint(d_id, x, y, temp, quality))
+
+    print("done.")
+    sys.stdout.flush()
+
+    print("Reordering data for random access ...", end=' ')
+    sys.stdout.flush()
+
+    data_list.sort(key=lambda d: d.quality)
+    print("done.")
+
+    # Create a set of random IDs to locate without duplication
+    interesting_ids = {random.randint(0, len(data_list)-1)for _ in range(0, 100)}
+    print(f"Creating {len(interesting_ids)} interesting IDs to seek.")
+
+    print("Locating data in list...", end=' ')
+    sys.stdout.flush()
+
+    t0 = datetime.datetime.now()
+    interesting_points = []
+    for i in interesting_ids:
+        pt = find_point_by_id_in_list(data_list, i)
+        interesting_points.append(pt)
+
+    t1 = datetime.datetime.now()
+    dt_list = (t1 - t0).total_seconds()
+    print("done.")
+    sys.stdout.flush()
+
+    print(f"dt: {dt_list} sec")
+    print(interesting_points)
+
+    t0 = datetime.datetime.now()
+    # Create dictionary via comprehension, key = id
+    data_dict = {d.id: d for d in data_list}
+
+    # locate the data in dictionary
+    interesting_points.clear()
+    for d_id in interesting_ids:
+        d = data_dict[d_id]
+        interesting_points.append(d)
+
+    t1 = datetime.datetime.now()
+    dt_dict = (t1 - t0).total_seconds()
+
+    print("done.")
+    sys.stdout.flush()
+
+    print(f"dt: {dt_dict} sec")
+    print(interesting_points)
+    print()
+    print(f"Speedup from dict: {round(dt_list / dt_dict):.0f}x")
+
+
+def find_point_by_id_in_list(data_list, i):
+    for d in data_list:
+        if d.id == i:
+            return d
+
+    return None
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Merging dictionaries
+
+```{python}
+# Overview:
+# Often we have multiple dictionaries and want to combine
+# them. For example, in Pyramid, we have separate dictionaries
+# that hold query string data, route data, and POST data. Merging
+# these makes access form data easier. That's just one example.
+route = {'id': 3009, 'title': 'Fast apps'}
+query = {'id': 1, 'query_fast': True}
+post = {'email': 'jj@jj.com', 'name': 'Jeff'}
+
+print("Individual dictionaries: ")
+print(f"route: {route}")
+print(f"query: {query}")
+print(f"post: {post}")
+
+m1 = query.copy()
+m1.update(post)
+m1.update(route)
+
+m2 = {k: v for d in [query, post, route] for k, v in d.items()}
+
+m3 = {**query, **post, **route}
+
+print(m1)
+print(m2)
+print(m3)
+print("Are the same? " + 'yes' if m1 == m2 and m2 == m3 and m1 == m3 else 'no')
+
+```
+
+# Memory hacking
+
+```{python}
+# Overview:
+# Custom types store their data in individualized, dynamic dictionaries
+# via self.__dict__. Using __slots__ to limit available attribute names
+# and move the name/key storage outside the instance to a type level
+# can significantly improve memory usage. See EOF for perf numbers.
+import collections
+import datetime
+
+ImmutableThingTuple = collections.namedtuple("ImmutableThingTuple", "a b c d")
+
+
+class MutableThing:
+    def __init__(self, a, b, c, d):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
+
+class ImmutableThing:
+    __slots__ = ['a', 'b', 'c', 'd']
+
+    def __init__(self, a, b, c, d):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
+
+print("Uncomment just 1 of these 4 loops below")
+print("after the program pauses on input, check the process memory")
+
+count = 1_000_000
+data = []
+t0 = datetime.datetime.now()
+
+# # Loop 1: Tuples
+print("tuple")
+for n in range(count):
+    data.append((1 + n, 2 + n, 3 + n, 4 + n))
+# # Loop 2: Named tuple
+# print("named tuple")
+# for n in range(count):
+#     data.append(ImmutableThingTuple(1 + n, 2 + n, 3 + n, 4 + n))
+# # Loop 3: Standard mutable class
+# print("standard class")
+# for n in range(count):
+#     data.append(MutableThing(1 + n, 2 + n, 3 + n, 4 + n))
+# # Loop 4: Slot based immutable class
+# print("slot based class")
+# for n in range(count):
+#     data.append(ImmutableThing(1 + n, 2 + n, 3 + n, 4 + n))
+
+
+t1 = datetime.datetime.now()
+input(f"Finished, waiting... done in {(t1 - t0).total_seconds()} s")
+# Sample output on OS X + Python 3
+# Hardware: Macbook Air 2017 edition
+
+# straight tuple:  238 MB, 0.673851 s
+# named tuple:     238 MB, 1.771059 s
+# class (dynamic): 332 MB, 1.674636 s
+# slot class:      223 MB, 1.594394 s
+
+# Interesting real-world story of benefits of slots:
+# http://tech.oyster.com/save-ram-with-python-slots/
+
+```
+
+# Get some
+
+```{python}
+from collections import defaultdict
+
+data = {"year": 2001, "country": "USA", "title": "Johnny 5", "duration": "119 min"}
+
+print('optimistic style')
+print(data['year'])
+# print(data['rating'])
+
+print()
+print('pessimistic style')
+try:
+    print(data['year'])
+    print(data['rating'])
+except Exception as x:
+    print(f"Ups! {x}")
+
+print()
+print('safety first style')
+if 'year' in data:
+    print(data['year'])
+if 'rating' in data:
+    print(data['rating'])
+else:
+    print("Oh we didn't find a rating...")
+print()
+
+print('accept None instead style')
+print(data.get('year'))
+print(data.get('rating'))
+print()
+
+print('Explicit alternate value style')
+print(data.get('year', 0))
+print(data.get('rating', '***'))
+
+data = defaultdict(lambda: "MISSING", data)
+print('accept default value instead style')
+print(data['year'])
+print(data['rating'])
+
+```
+
+# There is no switch
+
+```{python}
+from enum import Enum
+
+
+def main():
+    d_text = input("Which direction [n,s,w,e,nw,ne,sw,se]? ")
+    m = Moves.parse(d_text)
+    print(f"You choose: {m}")
+
+    squirrel = Character("Chippy")
+    squirrel.move(m)
+
+
+class Moves(Enum):
+    West = 1
+    North = 2
+    East = 3
+    South = 4
+    NorthEast = 5
+    SouthEast = 6
+    NorthWest = 7
+    SouthWest = 8
+
+    @staticmethod
+    def parse(text: str):
+        if not text:
+            return None
+
+        text = text.strip().lower()
+        parse_dict = {
+            'w': Moves.West, 'n': Moves.North, 'e': Moves.East, 's': Moves.South,
+            'ne': Moves.NorthEast, 'se': Moves.SouthEast, 'nw': Moves.NorthWest, 'sw': Moves.SouthWest,
+        }
+        return parse_dict.get(text)
+
+
+class Character:
+    def __init__(self, name):
+        self.name = name
+
+    def move(self, direction: Moves):
+        action_dict = {
+            Moves.North: lambda: print(f"{self.name} moves north with a special hesitation!"),
+            Moves.South: lambda: print(f"{self.name} is going south for winter!"),
+        }
+        action = action_dict.get(
+            direction,
+            lambda: print(f"{self.name} moves quickly to {direction}")
+        )
+        action()
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# To JSON and back
+
+```{python}
+import json
+
+movie_json = """
+{
+"Title":"Johnny 5",
+"Year":"2001",
+"Runtime":"119 min",
+"Country":"USA"
+}
+"""
+movie_data = json.loads(movie_json)
+print(type(movie_data), movie_data)
+print(f"The title is {movie_data.get('Title')}")
+
+movie_json_text_2 = json.dumps(movie_data)
+print(type(movie_json_text_2), movie_json_text_2)
+
+print(type(movie_json), movie_json)
+
+md = {
+    "Title": "Johnny 5",
+    "Year": "2001",
+    "Runtime": "119 min",
+    "Country": "USA"
+}
+print(type(md), md)
+
+```
+
+# Collections
+
+
+# Adding iteration
+
+```{python}
+class ShoppingCart:
+    def __init__(self):
+        self.items = []
+
+    def add_item(self, it):
+        self.items.append(it)
+
+    def __iter__(self):
+        sorted_items = sorted(self.items, key=lambda i: -i.price)
+        return sorted_items.__iter__()
+
+
+class CartItem:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+
+cart = ShoppingCart()
+cart.add_item(CartItem("guitar", 799))
+cart.add_item(CartItem("cd", 19))
+cart.add_item(CartItem("iPhone", 699))
+
+print("Items in your cart.")
+for item in cart:
+    print(f" * {item.name} ${item.price}")
+
+```
+
+# Containment
+
+```{python}
+nums_list = [1, 1, 2, 3, 5, 8, 13, 21, 34]
+nums_set = {1, 1, 2, 3, 5, 8, 13, 21, 34}
+nums_dict = {1: "one", 2: "two", 3: "three", 5: "five"}
+
+print(f"List: {nums_list}")
+print(f"Set: {nums_set}")
+print(f"Dict: {nums_dict}")
+
+n = int(input("Enter a number to test for small fibonacci: "))
+# is this number in the sequences above?
+print(f"{n} in list" if n in nums_list else 'not in list')
+print(f"{n} in set" if n in nums_set else 'not in set')
+print(f"{n} in dict" if n in nums_dict else 'not in dict')
+
+text = "Why did the multithreaded chicken cross the street? Other side to the get."
+word = input("Enter word to search text for...")
+# if word in text:
+if text.find(word) >= 0:
+    print(f"{word} is in {text}")
+else:
+    print(f"{word} is NOT in {text}")
+
+```
+
+# Slice
+
+```{python}
+from _03_slice_support import session_factory, Measurement
+
+
+def main():
+    nums = fibonacci(200)
+    print("All nums")
+    print(nums)
+
+    print("First 5 nums")
+    first_five = nums[:5]
+    print(first_five)
+
+    print("2 --> 7 nums")
+    print(nums[2:8])
+
+    print("Last 3 nums")
+    print(nums[-3:])
+
+    print("Top measurements from the database")
+    session = session_factory()
+    query = session.query(Measurement).filter(Measurement.value > .9).order_by(Measurement.value.desc())
+    print([m.value for m in query[:3]])
+    session.close()
+
+
+def fibonacci(limit):
+    numbers = []
+    current, nxt = 0, 1
+    while current < limit:
+        current, nxt = nxt, nxt + current
+        numbers.append(current)
+
+    return numbers
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Generators
+
+
+```{python}
+import itertools
+
+
+def classic_fibonacci(limit):
+    nums = []
+    current, nxt = 0, 1
+    while current < limit:
+        current, nxt = nxt, nxt + current
+        nums.append(current)
+
+    return nums
+
+
+def generator_fibonacci():
+    current, nxt = 0, 1
+    while True:
+        current, nxt = nxt, nxt + current
+        yield current
+
+
+# generator are composible:
+def even_generator(numbers):
+    for n in numbers:
+        if n % 2 == 0:
+            yield n
+
+
+# consume both generators as a pipeline here
+def even_fib():
+    for n in even_generator(generator_fibonacci()):
+        yield n
+
+
+if __name__ == '__main__':
+    print("Classic")
+    for m in classic_fibonacci(100):
+        print(m, end=', ')
+    print()
+
+    print("generator")
+    for m in generator_fibonacci():
+        print(m, end=', ')
+        if m > 100:
+            break
+    print()
+
+    print("composed")
+    for m in even_fib():
+        print(m, end=', ')
+        if m > 1_000_000:
+            break
+    print()
+
+    print("slicing_infinity")
+    print(list(itertools.islice(generator_fibonacci(), 5)))
+
+```
+
+```{python}
+import os
+
+
+def main():
+    root_dir = '/Users/wojtek/PycharmProjects/write-pythonic-code-demos/transcripts'
+    files = get_files(root_dir)
+    print("Found these files:")
+    print()
+    for f in files:
+        print(f)
+    print()
+    print("Done.")
+
+
+def get_files(folder):
+    for item in os.listdir(folder):
+        full_item = os.path.join(folder, item)
+        # print(full_item)
+        if os.path.isfile(full_item):
+            yield full_item
+        elif os.path.isdir(full_item):
+            # for f in get_files(full_item):
+            #     yield f
+            yield from get_files(full_item)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Express yourself
+
+```{python}
+import collections
+import uuid
+
+Measurement = collections.namedtuple('Measurement', 'id x y value')
+measurements = [
+    Measurement(str(uuid.uuid4()), 1, 1, 72),
+    Measurement(str(uuid.uuid4()), 2, 1, 40),
+    Measurement(str(uuid.uuid4()), 3, 1, 11),
+    Measurement(str(uuid.uuid4()), 2, 1, 90),
+    Measurement(str(uuid.uuid4()), 2, 2, 60),
+    Measurement(str(uuid.uuid4()), 2, 3, 73),
+    Measurement(str(uuid.uuid4()), 3, 1, 40),
+    Measurement(str(uuid.uuid4()), 3, 2, 90),
+    Measurement(str(uuid.uuid4()), 3, 3, 90)
+]
+print("C-style")
+high_measurements1 = []
+for m in measurements:
+    if m.value >= 70:
+        high_measurements1.append(m.value)
+print(high_measurements1)
+print()
+
+print("list of high values via comprehension")
+high_measurements2 = [
+    m.value
+    for m in measurements
+    if m.value >= 70
+]
+print(high_measurements2)
+print()
+
+print("via generator expression")
+high_m_gen = (
+    m.value
+    for m in measurements
+    if m.value >= 70
+)
+print(high_m_gen)
+# process the generator to get something printable.
+high_measurements3 = list(high_m_gen)
+print(high_measurements3)
+print()
+
+print("high values lookup dict via comp")
+high_m_by_id = {
+    m.id: m.value
+    for m in measurements
+    if m.value >= 70
+}
+print(high_m_by_id)
+print()
+
+print("high values distinct via set")
+high_values_distinct = {
+    m.value
+    for m in measurements
+    if m.value >= 70
+}
+print(high_values_distinct)
+
+```
+
+# Counting generators
+
+```{python}
+high_values = (
+    m.value
+    for m in measurements
+    if m.value >= 70
+)
+
+count = sum(1 for _ in high_values)
+print(count)
+
+```
+
+# Functions
+# Lambdas
+
+```{python}
+def main():
+    print(type(check_for_odd), check_for_odd)
+    print("Find odd numbers via method:")
+    for n in find_special_numbers(check_for_odd, 25):
+        print(n, end=', ')
+    print()
+
+    print("Find divisible by 6 via lambda:")
+    for n in find_special_numbers(lambda i: i % 6 == 0, 25):
+        print(n, end=', ')
+    print()
+
+    print("Sorted list of words: ")
+    list_of_words = [
+        'CPython', 'read', 'improvements,', 'issues.', 'on', 'comprehensive', 'porting', 'potential',
+        'user-facing', 'of', 'other', 'for', 'smaller', 'deprecations,', 'a', 'optimizations,', 'changes,',
+        'including', 'and', 'Please', 'many', 'list'
+    ]
+    list_of_words.sort(key=lambda w: w.lower())
+    print(list_of_words)
+    print()
+    print("Done.")
+
+
+def find_special_numbers(special_selector, limit=10):
+    found = []
+    n = 0
+    while len(found) < limit:
+        if special_selector(n):
+            found.append(n)
+        n += 1
+    return found
+
+
+def check_for_odd(n):
+    return n % 2 == 1
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Let's play catch
+
+```{python}
+import _02_lets_play_catch_support as s
+
+
+def main():
+    # run_with_checks()
+    # run_with_handling()
+    run_with_handling_separate_errors()
+
+
+def run_with_checks():
+    if not s.check_network():
+        print("Cannot download, no network")
+        return
+    if not s.check_dns():
+        print("Cannot download, no dns")
+        return
+    if not s.check_download_url():
+        print("Cannot download, no url set")
+        return
+
+    data = s.download_file()
+    print(f"downloaded data --> {data}")
+
+
+def run_with_handling():
+    try:
+        data = s.download_file()
+        print(f"downloaded data --> {data}")
+    except Exception as x:
+        print(f"Cannot download: {type(x)} --> {x}")
+
+
+def run_with_handling_separate_errors():
+    try:
+        data = s.download_file()
+        print(f"downloaded data --> {data}")
+    except PermissionError:
+        print("Cannot download, you don't have permission...")
+    except ConnectionError as ce:
+        print(f"Cannot download, problem with network: {ce}")
+    except Exception as x:
+        print(f"Cannot download: {type(x)} --> {x}")
+
+
+if __name__ == '__main__':
+    print("Let's play catch: ")
+    print()
+    main()
+
+```
+
+# Safer calls with keywords
+
+```{python}
+def connect_v1(user, server, replicate, use_ssl):
+    print("Connect v1, called with: ")
+    print(f"User = {user}")
+    print(f"Server = {server}")
+    print(f"Replicate = {replicate}")
+    print(f"Use SSL = {use_ssl}")
+    print()
+
+
+def connect_v2(*, user, server, replicate, use_ssl):
+    """
+    Use a leading * to require keyword arguments
+    """
+    print("Connect v2, called with: ")
+    print(f"User = {user}")
+    print(f"Server = {server}")
+    print(f"Replicate = {replicate}")
+    print(f"Use SSL = {use_ssl}")
+    print()
+
+
+print("******************* V1 *******************")
+print("*")
+connect_v1("TrueTeller", "db_svr", True, False)
+connect_v1(user="TrueTeller", server="db_svr", replicate=True, use_ssl=False)
+
+print()
+print("******************* V2 *******************")
+print("*")
+# connect_v2("TrueTeller", "db_svr", True, False)
+connect_v2(user="TrueTeller", server="db_svr", replicate=True, use_ssl=False)
+print("Done.")
+
+```
+
+# I'll have my usual...
+
+```{python}
+# start with no defaults...
+def display_greeting(name, greeting='Hello', times=1):
+    times = max(1, times)
+    for _ in range(0, times):
+        print(f"{greeting} {name}!")
+
+
+display_greeting("Jeff", 'Good morning', 2)
+display_greeting("Michael", "G'day", 1)
+
+display_greeting("Mark")
+display_greeting("Mark", "Good afternoon")
+display_greeting("Mark", "Good afternoon", 2)
+
+display_greeting(greeting="Yo!", name="Ewa", times=4)
+display_greeting("Mike", times=2)
+
+```
+
+# Variable length arguments
+
+```{python}
+def biggest_of_two(x, y):
+    if x > y:
+        return x
+    else:
+        return y
+
+
+print(biggest_of_two(6, 9))
+
+
+# what about more than 2?
+def biggest(x, *args):
+    big = x
+    for y in args:
+        if y > big:
+            big = y
+    return big
+
+
+print(biggest(1, 7, 42, 99, -2, 11))
+
+```
+
+# The key to the arguments
+
+```{python}
+# add arbitrary additional kw arguments
+def display_greeting(name, greeting='Hello', times=1, **kwargs):
+    times = max(1, times)
+    for _ in range(0, times):
+        print(f"{greeting} {name}!")
+    print(f"kwargs = {kwargs}")
+
+
+display_greeting(greeting="Hey, you're out of order", name="Yuval", additional=2, mode=7)
+print()
+
+data = {
+    'name': 'Ted',
+    'greeting': 'Long time no see bro!',
+    'times': 3
+}
+display_greeting(**data)
+
+```
+
+# Dangerous defaults
+
+```{python}
+def main():
+    a = add_items_bad("a", 3)
+    print(a)
+    add_items_bad("b", 2, a)
+    print(a)
+
+    # danger revealed here
+    d = add_items_bad("d", 4)
+    print(d)
+
+    print(id(a), id(d), id(a) == id(d))
+
+    print("Try again")
+    a = add_items("a", 3)
+    print(a)
+    add_items("b", 2, a)
+    print(a)
+
+    # danger revealed here
+    d = add_items("d", 4)
+    print(d)
+
+    print(id(a), id(d), id(a) == id(d))
+
+
+def add_items_bad(name, times=1, lst=[]):
+    for _ in range(0, times):
+        lst.append(name)
+    return lst
+
+
+def add_items(name, times=1, lst=None):
+    if lst is None:
+        lst = []
+    for _ in range(0, times):
+        lst.append(name)
+    return lst
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# Packages
+
+
+# Beware the trade imbalance
+
+```{python}
+import sys
+from os import path
+import statistics as stats
+from statistics import mean, median
+
+from _01_beware_the_trade_imbalance_support import mode
+
+print(f"Current version: {sys.version_info.major}")
+print(path.abspath('.'))
+print(stats.median([1, 1, 1, 5, 8, 9, 100]))
+print(median([1, 1, 1, 5, 8, 9, 100]))
+print(mean([1, 1, 1, 5, 8, 9, 100]))
+mode([42, 7, 7, 1])
+mode()
+
+```
+
+# What is __ main __
+
+```{python}
+print("About to import support lib")
+import _02_what_is___main__support as s
+print("Done importing support lib")
+
+
+def main():
+    print()
+    print(f"The variable value is {s.var}")
+    print(f"The name of the executed python module is {__name__}")
+
+
+print(f"Main app name: {__name__}")
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# What do you require
+
+```{python}
+# pip install -r requirements.txt
+```
+
+# Classes
+
+
+# Built in one place
+
+```{python}
+class NotSoPythonicPet:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    #     self.name = None
+    #     self.age = 0
+    #
+    # def set_name(self, name):
+    #     self.name = name
+    #
+    # def set_age(self, age):
+    #     self.age = age
+
+    def __str__(self):
+        return f"A pet whose name is {self.name} and age is {self.age}"
+
+
+cow = NotSoPythonicPet("Betsy", 7)
+# cow.set_name("Betty")
+# cow.set_age(3)
+# cow.happiness = 11
+print(cow)
+
+```
+
+# I want my privacy
+
+```{python}
+class PetSnake:
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+        self._protected_val = 2
+        self.normal = True
+
+    def __str__(self):
+        return f"Pet: {self.__name}, age: {self.__age}, protection level: {self._protected_val}"
+
+
+print("Here is my pet snake:")
+py = PetSnake("Slide", 6)
+print(py)
+print(dir(py))
+print(py._protected_val)
+
+```
+
+# What properties define you
+
+```{python}
+class NotSoPythonicPet:
+    def __init__(self, name, age):
+        self.age = age
+        self.name = name
+
+    def get_name(self):
+        return self.name
+
+    def get_age(self):
+        return self.age
+
+
+print("Here is my pet cow:")
+cow = NotSoPythonicPet("Betsy", 4)
+print(f"She is named {cow.get_name()} and is {cow.get_age()} years old.")
+print()
+
+
+class PetSnake:
+    def __init__(self, name, age):
+        self.__age = age
+        self.__name = name
+        self._protected_val = 2
+
+    @property
+    def is_protected(self):
+        return self._protected_val > 5
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def age(self):
+        print("--> Getting current age")
+        return self.__age
+
+    @age.setter
+    def age(self, value):
+        print(f"--> Setting age to {value}")
+        self.__age = value
+
+
+print("Here is my pet snake:")
+py = PetSnake("Slide", 6)
+print(f"She is named {py.name} and is {py.age} years old.")
+py.age = 7
+print(f"She is named {py.name} and is {py.age} years old.")
+print(py.is_protected)
+
+```
+
+# Loops
+# There is no num for loop
+
+```{python}
+data = [1, 7, 11]
+for item in data:
+    print(f"The value is {item}")
+
+```
+
+# There are num loops range
+
+```{python}
+# but sometimes, fairly rarely, you really need just an
+# increasing number of integers.
+# So, use range to model for int loops
+for i in range(0, 10):
+    print(i, end=', ')
+print()
+
+print(range(1, 7))
+
+```
+
+# There are num loops enumerate
+
+```{python}
+# More often, you need the index and the value.
+data = [1, 7, 11]
+for idx, value in enumerate(data):
+    print(f"{idx} --> {value}")
+
+```
+
+# Don't use else or else
+
+```{python}
+print("Running through the while: ", end='')
+count = 0
+while count < 5:
+    print('.', end='')
+    count += 1
+else:
+    print("In the else clause of the while loop.")
+print()
+
+print("Breaking out of the while: ", end='')
+count = 0
+while count < 5:
+    print('.', end='')
+    count += 1
+    if count > 3:
+        break
+else:
+    print("In the else clause of the early break loop.")
+print()
+
+```
+
+# Tuples
+# Unpack and move in
+
+```{python}
+# tuples are defined as:
+t = (7, 11, "cat", [1, 1, 3, 5, 8])
+print(t)
+t = 7, 11, "cat", [1, 1, 3, 5, 8]
+# print(t)
+# t = 7,
+# print(t, len(t))
+
+# create a tuple, grab a value.
+print(t[2])
+
+# we can assign individual variables:
+t = 7, "cat", 11
+# n = [0]
+# a = [1]
+
+# show them
+n, a, _ = t
+print(f"n={n} a={a}")
+
+# can also assign on a single line:
+x, y = 1, 2
+print(x, y)
+
+# You'll find this often in loops (remember numerical for-in loops):
+for idx, item in enumerate(['hat', 'cat', 'mat', 'that']):
+    print(f"{idx} --> {item}")
+
+```
+
+# Short swap tricks
+
+```{python}
+x = 7
+y = 11
+print(f"x={x} y={y}")
+
+x, y = y, x
+print(f"x={x} y={y}")
+
+```
+
+# Methods with ref params
+
+```{python}
+import math
+
+
+def main():
+    v1, v2 = out_params(6)
+    print(f"Return values (GOOD):   {v1} & {v2:.3f}")
+
+
+def out_params(base: float):
+    r1 = base * base
+    r2 = math.sqrt(base * base * base)
+    return r1, r2
+
+
+if __name__ == '__main__':
+    main()
+
+#     args = list()
+#     out_params_bad(6, args)
+#     print(f"Return values (bad):    {args[0]} & {args[1]:.2f}")
+#
+#
+# def out_params_bad(base: float, args: list):
+#     if len(args) == 0:
+#         args.append(0)
+#         args.append(0)
+#
+#     if len(args) != 2:
+#         raise Exception("Need to return values")
+#
+#     args[0] = base * base
+#     args[1] = math.sqrt(base * base * base)
+
+```
+
+# I'm not a number and I have a name
+
+```{python}
+import collections
+
+Rating = collections.namedtuple("Rating", "id, x, y, rating")
+
+
+def main():
+    for d in get_data_better():
+        print(f"id={d.id}, rating={d.rating}, position=({d.x}, {d.y})")
+        _, x, y, _ = d
+        print(x, y)
+
+
+def get_data_better():
+    data = [
+        Rating(1, 19.2, 11.1, 50),
+        Rating(2, 18.9, 12.0, 45),
+        Rating(3, 20.1, 14.0, 55),
+    ]
+    return data
+
+
+def get_data_tricky():
+    data = [
+        (1, 19.2, 11.1, 50),
+        (2, 18.9, 12.0, 45),
+        (3, 20.1, 14.0, 55),
+    ]
+    return data
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+# For homo sapiens
+
+
+# Official HTTP client
+
+```{python}
+# from: http://www.omdbapi.com/
+import requests
+
+title_text = input("Enter a title search string: ")
+url = f"http://www.omdbapi.com/?apikey=80fdd321&y=&plot=short&r=json&s={title_text}"
+
+# process json --> Search --> Title
+resp = requests.get(url)
+if resp.status_code != 200:
+    print(f"Whoa, status code unexpected! {resp.status_code}")
+else:
+    data = resp.json()
+    search = data['Search']
+    for m in search:
+        print(f"* {m['Title']}")
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
