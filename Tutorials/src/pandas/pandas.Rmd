@@ -1,0 +1,605 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.3
+  kernelspec:
+    display_name: sof_env
+    language: python
+    name: sof_env
+---
+
+```{python}
+# %autosave 0
+```
+
+```{python}
+import os
+import pandas as pd
+import numpy as np
+```
+
+```{python}
+os.chdir('/Users/wojtek/PycharmProjects/pragmatic-tutor/Tutorials/data')
+print(os.getcwd())
+```
+
+```{python}
+people = {
+    'first': ['Ewa', 'Ula', 'Ala', 'Jan', 'Adam'],
+    'last': ['Bąk', 'Kot', 'Duda', 'Kot', 'Kot'],
+    'email': ['Ewa@o2.pl', 'Ula@o2.pl', 'Ala@o2.pl', 'JJ@example.com', 'adas@buziaczek.pl']
+}
+```
+
+How to think about DataFrame:
+
+- DataFrame - rows and columns 
+- Series - rows of a single column
+
+```{python}
+df = pd.DataFrame(people)
+df
+```
+
+```{python}
+df.columns
+```
+
+```{python}
+df['email']
+```
+
+```{python}
+type(df['email'])
+```
+
+```{python}
+df[['last', 'email']]
+```
+
+# Indexes - How to Set, Reset, and Use Indexes
+- iloc - search by integer location
+
+```{python}
+df.iloc[[0, 2]]
+```
+
+```{python}
+df.iloc[[0, 2], 2]
+```
+
+- loc search by label
+
+```{python}
+df
+```
+
+```{python}
+df.loc[0]
+```
+
+```{python}
+df.loc[[0, 2]]
+```
+
+```{python}
+df.loc[[0, 2], ['first', 'last']]
+```
+
+```{python}
+df['email']
+```
+
+```{python}
+df.set_index('email', inplace=True)
+df.sort_index(inplace=True)
+df
+```
+
+```{python}
+df.index
+```
+
+```{python}
+df.loc['Ewa@o2.pl', 'last']
+```
+
+```{python}
+df.iloc[0]
+```
+
+```{python}
+df.reset_index(inplace=True)
+df
+```
+
+# Filtering - Using Conditionals to Filter Rows and Column
+
+```{python}
+df['last'] == 'Kot'
+```
+
+```{python}
+filt = (df['last'] == 'Kot') & (df['first'] == 'Jan')
+df.loc[filt]
+```
+
+```{python}
+df.loc[filt, ['email']]
+```
+
+```{python}
+filt = (df['last'] == 'Bąk') | (df['first'] == 'Jan')
+df.loc[filt]
+```
+
+- Negate a filter with tilda ~
+
+```{python}
+df.loc[~filt, ['email', 'first', 'last']]
+```
+
+# Updating Rows and Columns - Modifying Data Within DataFrames
+
+```{python}
+df.columns
+```
+
+```{python}
+df.columns = ['EMAIL', 'FIRST_NAME', 'LAST_NAME']
+df.columns
+```
+
+```{python}
+df.columns = [c.lower() for c in df.columns]
+df.columns
+```
+
+```{python}
+df.columns.str.replace('_', '-')
+```
+
+```{python}
+df.rename(columns={
+    'first_name': 'first',
+    'last_name': 'last',
+}, inplace=True)
+df
+```
+
+```{python}
+df.loc[2]
+```
+
+```{python}
+df.loc[2, ['last', 'email']] = ['Kotek', 'jay-jay@op.pl']
+df
+```
+
+```{python}
+filt = (df['email'] == 'Ewa@o2.pl')
+df.loc[filt, 'last'] = 'Szmidt'
+df
+```
+
+```{python}
+df['email'] = df['email'].str.lower()
+df
+```
+
+**apply - is used for calling a function on our values.**
+- Series
+
+```{python}
+df['email'].apply(len)
+```
+
+```{python}
+def update_email(email: str) -> str:
+    return email.upper()
+```
+
+```{python}
+df['email'] = df['email'].apply(update_email)
+df
+```
+
+```{python}
+df['email'] = df['email'].apply(lambda s: s.lower())
+df
+```
+
+- DataFrames
+
+```{python}
+df.apply(len)
+```
+
+```{python}
+df.apply(len, 'columns')
+```
+
+```{python}
+df.apply(pd.Series.min)
+```
+
+```{python}
+df.applymap(len)
+```
+
+```{python}
+df.applymap(str.lower)
+```
+
+```{python}
+# map method only works on series. map is used for substituting each value in a series with another value.
+df['first'].map({
+    'Ewa': 'ewelina',
+    'Ula': 'maria',
+})
+```
+
+```{python}
+df['first'].replace({
+    'Ewa': 'ewelina',
+    'Ula': 'maria',
+})
+```
+
+# Add/Remove Rows and Columns From DataFrames
+
+```{python}
+df['full_name'] = df['first'] + ' ' + df['last']
+df
+```
+
+```{python}
+df.drop(columns=['first', 'last'], inplace=True)
+df
+```
+
+```{python}
+df['full_name'].str.split()
+```
+
+```{python}
+df[['first', 'last']] = df['full_name'].str.split(' ', expand=True)
+df
+```
+
+```{python}
+df.append({'first': 'Tomas'}, ignore_index=True)
+```
+
+```{python}
+people = {
+    'first': ['Tomek', 'Szczepan'],
+    'last': ['Pesto', 'Nowak'],
+    'email': ['Pesto@o2.pl', 'Szczepek@o2.pl']
+}
+```
+
+```{python}
+df2 = pd.DataFrame(people)
+df2
+```
+
+```{python}
+df = df.append(df2, ignore_index=True)
+df
+```
+
+```{python}
+df.drop(index=[2, 5, 6])
+```
+
+```{python}
+filt = df['last'] == 'Kot'
+df.drop(index=df[filt].index)
+```
+
+# Sorting Data
+
+```{python}
+df.sort_values(by='last')
+```
+
+```{python}
+df.sort_values(by=['last', 'first'], ascending=False)
+```
+
+```{python}
+df.sort_values(by=['last', 'first'], ascending=[False, True], inplace=True)
+df
+```
+
+```{python}
+df.sort_index()
+```
+
+```{python}
+df['last'].sort_values()
+```
+
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+*****************************************************************************************************************************************************************
+
+```{python}
+pd.set_option('display.max_columns', 85)
+pd.set_option('display.max_rows', 85)
+```
+
+```{python}
+na_vals = ['NA', 'Missing']
+df = pd.read_csv('survey_results.zip', index_col='Respondent', na_values=na_vals)
+schema_df = pd.read_csv('survey_results_schema.csv', index_col='Column')
+df.head()
+```
+
+```{python}
+schema_df.sort_index(inplace=True)
+schema_df.head()
+```
+
+```{python}
+schema_df.loc['MgrIdiot', 'QuestionText']
+```
+
+# Grouping and Aggregating - Analyzing and Exploring Your Data
+
+```{python}
+df.rename(columns={'ConvertedComp': 'SalaryUSD'}, inplace=True)
+```
+
+```{python}
+df['SalaryUSD'].head()
+```
+
+```{python}
+df['SalaryUSD'].median()
+```
+
+```{python}
+df.median()
+```
+
+```{python}
+df.describe()
+```
+
+```{python}
+df['SalaryUSD'].count()
+```
+
+```{python}
+df['Hobbyist'].value_counts()
+```
+
+```{python}
+schema_df.loc['SocialMedia']
+```
+
+```{python}
+df['SocialMedia'].value_counts(normalize=True)
+```
+
+**groupby operation involves:**
+- split
+- apply function
+- combine results
+
+```{python}
+df['Country'].value_counts()
+```
+
+```{python}
+country_grp = df.groupby(['Country'])
+country_grp.get_group('Poland').head()
+```
+
+```{python}
+filt = df['Country'] == 'Poland'
+df.loc[filt]['SocialMedia'].value_counts(normalize=True)
+```
+
+```{python}
+country_grp['SocialMedia'].value_counts(normalize=True)
+```
+
+```{python}
+country_grp['SocialMedia'].value_counts(normalize=True).loc['Poland']
+```
+
+```{python}
+country_grp['SalaryUSD'].median().tail()
+```
+
+```{python}
+country_grp['SalaryUSD'].median().loc['Poland']
+```
+
+```{python}
+country_grp['SalaryUSD'].agg(['median', 'mean']).loc['Poland']
+```
+
+```{python}
+filt = df['Country'] == 'Poland'
+df.loc[filt]['LanguageWorkedWith'].str.contains('Python').value_counts()
+```
+
+```{python}
+country_grp['LanguageWorkedWith'].apply(lambda s: s.str.contains('Python').sum())
+```
+
+- What % of people from each country know Python?
+
+```{python}
+country_respondents = df['Country'].value_counts()
+country_uses_python = country_grp['LanguageWorkedWith'].apply(lambda s: s.str.contains('Python').sum())
+python_df = pd.concat([country_respondents, country_uses_python], axis='columns')
+python_df.rename(columns={'Country': 'NumRespondents', 'LanguageWorkedWith': 'NumKnowsPython'}, inplace=True)
+python_df['PctKnowsPython'] = (python_df['NumKnowsPython'] / python_df['NumRespondents']) * 100
+python_df.sort_values(by='PctKnowsPython', ascending=False, inplace=True)
+```
+
+```{python}
+python_df.loc['Poland']
+```
+
+# Cleaning Data - Casting Datatypes and Handling Missing Values
+
+```{python}
+df['YearsCode'].unique()
+```
+
+```{python}
+df['YearsCodePro'].unique()
+```
+
+```{python}
+df['YearsCode'].replace('Less than 1 year', 0, inplace=True)
+df['YearsCodePro'].replace('Less than 1 year', 0, inplace=True)
+df['YearsCode'].replace('More than 50 years', 51, inplace=True)
+df['YearsCodePro'].replace('More than 50 years', 51, inplace=True)
+df['YearsCode'] = df['YearsCode'].astype(float)
+df['YearsCodePro'] = df['YearsCodePro'].astype(float)
+print(f"mean YearsCode: {df['YearsCode'].mean():.2f}")
+print(f"median YearsCode: {df['YearsCode'].median()}")
+print(f"mean YearsCodePro: {df['YearsCodePro'].mean():.2f}")
+print(f"median YearsCodePro: {df['YearsCodePro'].median()}")
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
+
+```{python}
+
+```
