@@ -259,8 +259,18 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+*.jpg
+*.db
+
 Tutorials/data/
 Tutorials/docs/
-Tutorials/pics/django/save-json-post.png
+Tutorials/pics/random
 Tutorials/test/
+Tutorials/src/pythonic-code/py_tricks/context_managers/Sample-Dir-One
+Tutorials/src/pythonic-code/py_tricks/context_managers/Sample-Dir-Two
+Tutorials/docs/papers
+Tutorials/src/async/multi-proc-demo/*.png
+Tutorials/src/async/multi-proc-demo/pngs
+Tutorials/src/async/multi-proc-demo/300
+Tutorials/pics/django/save-json-post.png
 Tutorials/pics/django/paginator-object-shell.png
