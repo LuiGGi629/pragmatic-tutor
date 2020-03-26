@@ -1,0 +1,12 @@
+# https?://(www\.)?\w+\.\w+
+https://www.google.com
+http://coreyms.com
+https://youtube.com
+https://www.nasa.gov
+
+# https?://(www\.)?(\w+)(\.\w+)
+# Group 1:
+
+# https?://(www\.)?(\w+)(\.\w+)
+# --> Replace all
+# $2$3
